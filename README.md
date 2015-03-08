@@ -3,7 +3,11 @@ Cheers
 
 Cheers is an example Play! framework based  application developed for "O Play przy piwie" talk presented at [Szczecin Java User Group meetup on 16th March 2015](http://www.meetup.com/Szczecin-Java-Users-Group/events/220797721/).
 
-Every commit lists the steps taken to reach particular state. Feel free to explore it.
+Every tagged commit lists the steps taken to reach particular state. Feel free to explore it.
+
+You can see it running at [http://cheers-szjug.herokuapp.com/](http://cheers-szjug.herokuapp.com/).
+
+Want it to? [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
 Steps done so far
 =================
@@ -58,7 +62,7 @@ Steps done so far
       connects to collection, creating it if it doesn't exist, and ensures it is capped
     * instead of being sent back to the socket, incoming messages are persisted in the database
     * output of socket is now based on tailable cursor over cheers collection
-9. **Deploy on heroku** _(optional step)_
+9. Deploy on heroku _(optional step)_
   * propagate implicit request from controller into templates (check `app/controllers/Application.scala`, `app/views/index.scala.html` and `app/views/main.scala.html`)
   * use built-in helper to exposing socket endpoint as a javascipt object
     ```scala

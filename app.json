@@ -1,0 +1,15 @@
+{
+  "name": "Cheers",
+  "description": "Cheers is an example Play! framework based application developed for a talk presented at Szczecin Java User Group meetup.",
+  "repository": "https://github.com/mcveat/cheers-szjug",
+  "logo": "http://szjug.pl/images/szjug-logo-small.png",
+  "keywords": [
+    "scala",
+    "play",
+    "reactive-mongo",
+    "websockets"
+  ],
+  "addons": [
+    "mongolab:sandbox"
+  ]
+}
