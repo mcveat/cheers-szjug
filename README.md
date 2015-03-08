@@ -27,4 +27,12 @@ Steps done so far
     * `<link rel="stylesheet" href="@routes.Assets.at("lib/foundation/css/foundation.min.css")"/>`
     * `<script src="@routes.Assets.at("lib/jquery/jquery.min.js")"></script>`
   * In the play console execute `reload` command
-5. **Build form for sending Cheers** _(check commit diff for details)_
+5. Build form for sending Cheers _(check commit diff for details)_
+6. **Introduce endpoint exposing websocket**
+  * Put line `GET /socket controllers.Application.socket` in the `conf/routes` file
+  * Consult changes in `app/controllers/Application.scala`
+    * `import scala.concurrent.ExecutionContext.Implicits.global` brings thread execution context into scope, it is used by `Concurrent.broadcast`
+    * `Request` case class defines the structure of expected client request
+    * `Cheer` case class defines the object sent to clients connected to websocket
+    * Pair of format definitions allow us to transform between json and case class representations
+    * `socket` method defines mechanics of the websocket: whenever json value is sent to the socket, it is read as `Request` instance, transformed to `Cheer` instance and then sent back to the socket in it's json representation
