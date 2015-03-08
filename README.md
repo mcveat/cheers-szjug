@@ -36,7 +36,7 @@ Steps done so far
     * `Cheer` case class defines the object sent to clients connected to websocket
     * Pair of format definitions allow us to transform between json and case class representations
     * `socket` method defines mechanics of the websocket: whenever json value is sent to the socket, it is read as `Request` instance, transformed to `Cheer` instance and then sent back to the socket in it's json representation
-7. **Wire web client with websocket**
+7. Wire web client with websocket
   * Put container for cheers in `app/views/index.html`: `<div id="cheers-list"></div>`
   * Consult `app/assets/js/app.coffee`:
     * `socket = new WebSocket('ws:/localhost:9000/socket')` opens socket on the endpoint defined in the previous step
@@ -44,3 +44,18 @@ Steps done so far
     * `$('#send').click` is executed on `Send` button click, reading the form, building message and sending it throught the socket
   * Include script in `app/views/main.html` : `<script src="@routes.Assets.at("js/app.js")"></script>`
   * Consult `public/stylesheets/main.css` for changes in the cheer display
+8. **Introduce persistence of cheers**
+  * Import [Reactive Mongo](http://reactivemongo.org) [Play! plugin](https://github.com/ReactiveMongo/Play-ReactiveMongo) by adding `"org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23"` to `libraryDependencies` in `build.sbt`
+  * Reload project executing `reload` in application console
+  * Enable plugin by creating `conf/play.plugins` file and putting `1100:play.modules.reactivemongo.ReactiveMongoPlugin` there
+  * Configure database location by putting `mongodb.uri = "mongodb://localhost:27017/cheers"` in `conf/application.conf`
+  * Consult changes in `app/controllers/Application.scala`:
+    * `import play.api.Play.current` brings current application context in scope, this is the plugin framework requirement
+    * Code below:
+      ```scala
+      lazy val collection = ReactiveMongoPlugin.db.collection[JSONCollection]("cheers")
+      collection.convertToCapped(100l, None)
+      ```
+      connects to collection, creating it if it doesn't exist, and ensures it is capped
+    * instead of being sent back to the socket, incoming messages are persisted in the database
+    * output of socket is now based on tailable cursor over cheers collection

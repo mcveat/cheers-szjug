@@ -12,5 +12,6 @@ libraryDependencies ++= Seq(
   cache,
   ws,
   "org.webjars" % "foundation" % "5.5.1",
-  "org.webjars" % "jquery" % "2.1.3"
+  "org.webjars" % "jquery" % "2.1.3",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23"
 )

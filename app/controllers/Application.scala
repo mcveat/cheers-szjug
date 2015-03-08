@@ -1,12 +1,19 @@
 package controllers
 
 import org.apache.commons.codec.digest.DigestUtils
-import play.api.libs.iteratee.{Iteratee, Concurrent}
-import play.api.libs.json.{Json, JsValue}
+import play.api.libs.iteratee.Iteratee
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc._
+import play.modules.reactivemongo.ReactiveMongoPlugin
+import play.modules.reactivemongo.json.collection.JSONCollection
+import reactivemongo.api.QueryOpts
+import play.api.Play.current
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object Application extends Controller {
+  val collection = ReactiveMongoPlugin.db.collection[JSONCollection]("cheers")
+  collection.convertToCapped(100l, None)
 
   def index = Action {
     Ok(views.html.index())
@@ -21,12 +28,12 @@ object Application extends Controller {
   implicit val cheerFormat = Json.format[Cheer]
 
   def socket = WebSocket.using[JsValue] { request =>
-    val (out, channel) = Concurrent.broadcast[JsValue]
-
     val in = Iteratee.foreach[JsValue] { msg =>
-      val cheer = Json.toJson(msg.as[Request].asCheer)
-      channel.push(cheer)
+      val cheer = msg.as[Request].asCheer
+      collection.insert(cheer)
     }
+
+    val out = collection.find(Json.obj()).options(QueryOpts().tailable.awaitData).cursor[JsValue].enumerate()
 
     (in, out)
   }
