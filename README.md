@@ -21,9 +21,10 @@ Steps done so far
     * Change the title to `Cheers`: `@main("Cheers")`
     * Replace welcome message with header
     * Update tests in `/test` directory
-4. **Get jQuery and Foundation framework from webjars**
+4. Get jQuery and Foundation framework from webjars
   * Add `"org.webjars" % "foundation" % "5.5.1"` and `"org.webjars" % "jquery" % "2.1.3"`
   * Include libraries in `main.scala.html`
     * `<link rel="stylesheet" href="@routes.Assets.at("lib/foundation/css/foundation.min.css")"/>`
     * `<script src="@routes.Assets.at("lib/jquery/jquery.min.js")"></script>`
   * In the play console execute `reload` command
+5. **Build form for sending Cheers** _(check commit diff for details)_
