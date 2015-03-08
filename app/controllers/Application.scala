@@ -15,7 +15,7 @@ object Application extends Controller {
   val collection = ReactiveMongoPlugin.db.collection[JSONCollection]("cheers")
   collection.convertToCapped(100l, None)
 
-  def index = Action {
+  def index = Action { implicit request =>
     Ok(views.html.index())
   }
 

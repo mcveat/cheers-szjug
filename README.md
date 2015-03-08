@@ -31,7 +31,6 @@ Steps done so far
 6. Introduce endpoint exposing websocket
   * Put line `GET /socket controllers.Application.socket` in the `conf/routes` file
   * Consult changes in `app/controllers/Application.scala`
-    * `import scala.concurrent.ExecutionContext.Implicits.global` brings thread execution context into scope, it is used by `Concurrent.broadcast`
     * `Request` case class defines the structure of expected client request
     * `Cheer` case class defines the object sent to clients connected to websocket
     * Pair of format definitions allow us to transform between json and case class representations
@@ -44,7 +43,7 @@ Steps done so far
     * `$('#send').click` is executed on `Send` button click, reading the form, building message and sending it throught the socket
   * Include script in `app/views/main.html` : `<script src="@routes.Assets.at("js/app.js")"></script>`
   * Consult `public/stylesheets/main.css` for changes in the cheer display
-8. **Introduce persistence of cheers**
+8. Introduce persistence of cheers
   * Import [Reactive Mongo](http://reactivemongo.org) [Play! plugin](https://github.com/ReactiveMongo/Play-ReactiveMongo) by adding `"org.reactivemongo" %% "play2-reactivemongo" % "0.10.5.0.akka23"` to `libraryDependencies` in `build.sbt`
   * Reload project executing `reload` in application console
   * Enable plugin by creating `conf/play.plugins` file and putting `1100:play.modules.reactivemongo.ReactiveMongoPlugin` there
@@ -59,3 +58,16 @@ Steps done so far
       connects to collection, creating it if it doesn't exist, and ensures it is capped
     * instead of being sent back to the socket, incoming messages are persisted in the database
     * output of socket is now based on tailable cursor over cheers collection
+9. **Deploy on heroku** _(optional step)_
+  * propagate implicit request from controller into templates (check `app/controllers/Application.scala`, `app/views/index.scala.html` and `app/views/main.scala.html`)
+  * use built-in helper to exposing socket endpoint as a javascipt object
+    ```scala
+    @helper.javascriptRouter("jsRoutes")(
+      routes.javascript.Application.socket
+    )
+    ```
+  * in `app/js/app.coffee` change socket enpoint to `jsRoutes.controllers.Application.socket().webSocketURL()`
+  * create `Procfile` with content: `web: target/universal/stage/bin/cheers -Dhttp.port=$PORT -Dmongodb.uri=${MONGOLAB_URI} -Denv=prod`
+  * create your application on heroku and add mongolab sandbox addon to it
+  * execute `heroku git:remote -a <name of the app>` in the project root
+  * execute `git push heroku master`

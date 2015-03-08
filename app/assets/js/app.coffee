@@ -1,5 +1,5 @@
 $ ->
-  socket = new WebSocket('ws:/localhost:9000/socket')
+  socket = new WebSocket(jsRoutes.controllers.Application.socket().webSocketURL())
   socket.onmessage = (event) ->
     cheer = JSON.parse(event.data)
     $('#cheers-list').prepend "

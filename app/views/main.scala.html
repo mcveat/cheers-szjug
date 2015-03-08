@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String)(content: Html)(implicit request: Request[Any])
 
 <!DOCTYPE html>
 
@@ -9,6 +9,9 @@
         <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
         <script src="@routes.Assets.at("lib/jquery/jquery.min.js")"></script>
+        @helper.javascriptRouter("jsRoutes")(
+          routes.javascript.Application.socket
+        )
         <script src="@routes.Assets.at("js/app.js")"></script>
     </head>
     <body>
